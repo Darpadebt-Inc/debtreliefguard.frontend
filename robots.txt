@@ -92,6 +92,7 @@ Disallow: /
 
 ##### DEFAULT — Block unknown/generic bots
 User-agent: *
+Allow: /blog/
 Disallow: /
 
 ##### SITEMAP
