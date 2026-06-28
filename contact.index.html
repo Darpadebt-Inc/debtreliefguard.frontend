@@ -283,15 +283,19 @@
           return;
         }
 
-        // Non-blocking send (036 can route to CRM/email)
-        var ctl = new AbortController(); setTimeout(function(){ctl.abort();}, 2500);
+        // Send to router; only confirm success when it actually accepts the lead.
+        var ctl = new AbortController(); setTimeout(function(){ctl.abort();}, 8000);
+        out.textContent = 'Sending…';
         fetch('/api/mesh/036-lead-router/ingest', {
           method:'POST', headers:{'content-type':'application/json'},
           body: JSON.stringify(payload), signal: ctl.signal, keepalive:true
-        }).catch(function(){});
-
-        out.innerHTML = '<span class="ok">Thanks — your message was sent. A specialist will reach out shortly.</span>';
-        form.reset();
+        }).then(function(res){
+          if(!res.ok){ throw new Error('HTTP '+res.status); }
+          out.innerHTML = '<span class="ok">Thanks — your message was sent. A specialist will reach out shortly.</span>';
+          form.reset();
+        }).catch(function(){
+          out.innerHTML = '<span class="err">We couldn’t send your message just now. Please try again, or call/text us at 888‑437‑7141. Your details have been kept.</span>';
+        });
       }catch(err){ out.textContent='Something went wrong. Please call 888‑437‑7141.'; }
     });
   })();

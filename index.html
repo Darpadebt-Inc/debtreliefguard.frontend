@@ -145,7 +145,7 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
       "@id":"https://gatewaydebthelp.com/#gfsr",
       "name":"Gateway Financial Settlement Relief, LLC",
       "alternateName":["GFSR","Gateway Debt Help","Debt Help Form"],
-      "url":"https://debthelpform.com/",
+      "url":"https://debtreliefguard.com/",
       "telephone":"+1-888-437-7141",
       "sameAs":[
         "https://debthelpform.com/",
@@ -256,8 +256,7 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
         <div class="row" style="margin-top:12px;">
           <button type="button" class="btn primary" id="nextBtn">Get My Keys to Debt Relief</button>
         </div>
-      </form>  
-      </form>  
+      </form>
 
       <p class="legal">FTC alignment: We do not charge upfront fees for debt relief services. Options and eligibility vary by state and creditor.  
         <br/>  
@@ -464,9 +463,9 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
           okBox.style.display = 'block';  
           form.reset(); setStep(1);  
         } catch (err) {  
-          console.warn('POST failed (likely preview env):', err);  
-          okBox.style.display = 'block';  
-        }  
+          console.warn('Lead POST failed:', err);
+          showError('Sorry — we couldn’t submit your request just now. Please try again, or call/text us at (888) 437‑7141. Your details have been kept so you can resend.');
+        }
       });  
     })();  
   </script>  </body>  
