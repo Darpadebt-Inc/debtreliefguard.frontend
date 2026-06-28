@@ -48,7 +48,8 @@
     body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; color: var(--ink); background: var(--bg); }  
     a { color: var(--brand); text-decoration: none; }  
     a:hover { text-decoration: underline; }
-    header { position: sticky; top: 0; z-index: 50; background: var(--navy); border-bottom: 1px solid #0a2440; }
+    html { scroll-padding-top: 112px; }
+    header { position: sticky; top: 0; z-index: 1000; background: var(--navy); border-bottom: 1px solid #0a2440; }
     .container { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px; }
     .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--pad); }
@@ -62,7 +63,7 @@
     #menuPanel { display: flex; gap: 18px; }
     @media (max-width: 900px) {
       .nav { padding: 12px var(--pad); }
-      #menuPanel { display: none; position: absolute; left: 0; right: 0; top: 64px; background: var(--navy); border-bottom: 1px solid #0a2440; padding: 10px var(--pad); flex-direction: column; }
+      #menuPanel { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 1001; background: var(--navy); border-bottom: 1px solid #0a2440; box-shadow: 0 12px 28px rgba(2,6,23,.35); padding: 10px var(--pad); flex-direction: column; }
       .hamburger { display: inline-block; }
     }  
 
