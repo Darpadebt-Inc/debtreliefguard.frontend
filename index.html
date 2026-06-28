@@ -49,7 +49,7 @@
     body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; color: var(--ink); background: var(--bg); overflow-wrap: break-word; }
     a { color: var(--brand); text-decoration: none; }  
     a:hover { text-decoration: underline; }
-    html { scroll-padding-top: 112px; }
+    html { scroll-padding-top: var(--header-h, 150px); }
     header { position: sticky; top: 0; z-index: 1000; background: var(--navy); border-bottom: 1px solid #0a2440; }
     .container { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px; }
@@ -413,8 +413,24 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
 
         window.addEventListener('resize', syncMenuForViewport);
       }
-  
-      // progress bars  
+
+      // sticky-header anchor offset: keep scroll-padding-top matched to real header
+      // height so in-page anchor jumps (e.g. /#leadForm) never land under the header.
+      const siteHeader = document.querySelector('header');
+      if (siteHeader) {
+        let rafId = 0;
+        const syncHeaderOffset = () => {
+          rafId = 0;
+          const h = Math.round(siteHeader.getBoundingClientRect().height);
+          if (h > 0) document.documentElement.style.setProperty('--header-h', (h + 12) + 'px');
+        };
+        const scheduleHeaderOffset = () => { if (!rafId) rafId = requestAnimationFrame(syncHeaderOffset); };
+        scheduleHeaderOffset();
+        window.addEventListener('resize', scheduleHeaderOffset);
+        window.addEventListener('load', scheduleHeaderOffset);
+      }
+
+      // progress bars
       const panes = $$('.step-pane');
       const bars = panes.map((_, idx) => $('#s' + (idx + 1)));
       const totalSteps = panes.length;
