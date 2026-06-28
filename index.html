@@ -53,10 +53,10 @@
     header { position: sticky; top: 0; z-index: 1000; background: var(--navy); border-bottom: 1px solid #062826; }
     .container { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px; }
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--pad); }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand img { display: block; height: 72px; padding: 6px 20px; border-radius: 14px; background: #06302e; border: 1px solid rgba(94,234,212,.35); box-shadow: 0 10px 26px rgba(2,6,23,.25); }
-    .menu { display: flex; gap: 18px; align-items: center; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 6px var(--pad); flex-wrap: nowrap; }
+    .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .brand img { display: block; height: 88px; padding: 4px 12px; border-radius: 14px; background: #06302e; border: 1px solid rgba(94,234,212,.35); box-shadow: 0 10px 26px rgba(2,6,23,.25); }
+    .menu { display: flex; gap: 16px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
     .menu a { font-weight: 600; color: #ffffff; }
     .menu a[aria-current="page"] { color: #5eead4; text-decoration: underline; }
     .hamburger { display: none; appearance: none; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.10); color: #ffffff; border-radius: 10px; padding: 8px 10px; }
