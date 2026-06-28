@@ -1,0 +1,28 @@
+name: Verify color live
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe pages.dev origin for palette + layout fix
+        shell: bash --noprofile --norc {0}
+        run: |
+          set +e
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          probe() {
+            curl -sSL -m 30 -A "$UA" -H "Accept: text/html" -o /tmp/b -w '%{http_code}' "$1" 2>/dev/null > /tmp/code
+            code=$(cat /tmp/code); blue=$(grep -c '#0369a1' /tmp/b); teal=$(grep -c '#0f766e' /tmp/b)
+            ofit=$(grep -c 'object-fit:contain' /tmp/b); wrap=$(grep -c 'flex-wrap:wrap' /tmp/b)
+            printf '| %s | %s | brand-blue:%s teal:%s | object-fit:%s flex-wrap:%s |\n' "$1" "$code" "$blue" "$teal" "$ofit" "$wrap"
+          }
+          {
+            echo "## Live verify: palette + logo/menu fix"
+            echo "| url | http | colors | layout-fix markers |"
+            echo "|---|---|---|---|"
+            probe "https://debtreliefguard-frontend.pages.dev/"
+            probe "https://debtreliefguard-frontend.pages.dev/compare.us.html"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          exit 0
