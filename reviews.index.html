@@ -61,9 +61,9 @@
     header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--b)}
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px var(--pad)}
     .brand{display:flex;align-items:center;gap:12px}
-    .brand img{height:34px}
+    .brand img{height:34px;width:auto;object-fit:contain}
     .brand .name{font-weight:800}
-    .menu{display:flex;gap:18px;align-items:center}
+    .menu{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
     .menu a{font-weight:600;color:var(--ink)}
     .menu a[aria-current="page"]{color:var(--brand);text-decoration:underline}
     .hamburger{display:none;appearance:none;border:1px solid var(--b);background:#fff;border-radius:10px;padding:8px 10px}
