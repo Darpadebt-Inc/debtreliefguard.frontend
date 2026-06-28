@@ -1,7 +1,8 @@
 name: Deploy to Cloudflare Pages
 
-# Autonomous live deploy via Direct Upload (wrangler) — independent of the
-# Cloudflare Pages Git integration. Runs on GitHub's network-open runners.
+# Autonomous live deploy via Direct Upload (wrangler), independent of the Cloudflare
+# Pages Git integration. Skips cleanly (green, no failure) until CF secrets are present;
+# once they are, every push to main deploys to the project's production branch.
 
 on:
   push:
@@ -10,7 +11,6 @@ on:
 
 permissions:
   contents: read
-  deployments: write
 
 concurrency:
   group: cf-pages-${{ github.ref_name }}
@@ -19,8 +19,6 @@ concurrency:
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CL_ACCOUNT_ID }}
-  # Optional override: set repo/org variable PAGES_PROJECT to the exact project name.
-  PAGES_PROJECT: ${{ vars.PAGES_PROJECT }}
   SITE_MATCH: debtreliefguard
 
 jobs:
@@ -30,45 +28,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate Cloudflare credentials
+      - name: Gate on Cloudflare credentials
+        id: gate
         run: |
           set -euo pipefail
-          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "::error title=Missing Cloudflare secrets::Add secrets CLOUDFLARE_API_TOKEN (or CF_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID (or CL_ACCOUNT_ID) to this repo or the org. Token needs 'Cloudflare Pages: Edit'."
-            exit 1
+          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ] && [ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Pages deploy skipped::Add CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID (token needs 'Cloudflare Pages: Edit') to enable autonomous on-push deploy. Until then deploys run from the backend 'Deploy Frontends to Cloudflare Pages' workflow."
           fi
 
-      - name: Resolve Pages project
+      - name: Resolve Pages project + production branch
         id: proj
+        if: steps.gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
-          name="${PAGES_PROJECT:-}"
-          if [ -z "$name" ]; then
-            resp=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects?per_page=100")
-            if [ "$(echo "$resp" | jq -r '.success')" != "true" ]; then
-              echo "::error title=Cloudflare API error::$(echo "$resp" | jq -c '.errors')"; exit 1
-            fi
-            name=$(echo "$resp" | jq -r --arg m "$SITE_MATCH" '
-              .result[] | select(
-                (.name|ascii_downcase|contains($m)) or
-                (((.domains // [])|join(","))|ascii_downcase|contains($m)) or
-                ((.subdomain // "")|ascii_downcase|contains($m))
-              ) | .name' | head -n1)
-            if [ -z "$name" ] || [ "$name" = "null" ]; then
-              echo "::error title=No matching Pages project::No project matched '$SITE_MATCH'. Existing projects:"
-              echo "$resp" | jq -r '.result[].name'
-              echo "Set repo variable PAGES_PROJECT to the exact project name."; exit 1
-            fi
+          resp=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects")
+          if [ "$(echo "$resp" | jq -r '.success')" != "true" ]; then
+            echo "::error title=Cloudflare API error::$(echo "$resp" | jq -c '.errors // .')"; exit 1
           fi
-          echo "name=$name" >> "$GITHUB_OUTPUT"
-          echo "Resolved Cloudflare Pages project: $name"
+          proj=$(echo "$resp" | jq -c --arg m "$SITE_MATCH" 'first(.result[] | select(
+              (.name|ascii_downcase|contains($m)) or
+              (((.domains // [])|join(","))|ascii_downcase|contains($m)) or
+              ((.subdomain // "")|ascii_downcase|contains($m))))')
+          if [ -z "$proj" ] || [ "$proj" = "null" ]; then
+            echo "::error title=No matching Pages project::No project matched '$SITE_MATCH'. Existing:"; echo "$resp" | jq -r '.result[]?.name'; exit 1
+          fi
+          echo "name=$(echo "$proj" | jq -r '.name')" >> "$GITHUB_OUTPUT"
+          echo "prod_branch=$(echo "$proj" | jq -r '.production_branch // "main"')" >> "$GITHUB_OUTPUT"
+          echo "Project $(echo "$proj" | jq -r '.name') | production_branch $(echo "$proj" | jq -r '.production_branch')"
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to PRODUCTION (Direct Upload)
+        if: steps.gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           npx --yes wrangler@4.32.0 pages deploy . \
             --project-name "${{ steps.proj.outputs.name }}" \
-            --branch "${{ github.ref_name }}" \
+            --branch "${{ steps.proj.outputs.prod_branch }}" \
             --commit-hash "${{ github.sha }}" \
             --commit-dirty=true
