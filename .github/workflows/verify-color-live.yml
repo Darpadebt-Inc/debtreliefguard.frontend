@@ -1,0 +1,31 @@
+name: Verify color live
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe live + pages.dev for brand palette
+        run: |
+          set -uo pipefail
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          probe() {
+            url="$1"
+            code=$(curl -sS -m 30 -A "$UA" -H "Accept: text/html" -o /tmp/b -w '%{http_code}' "$url" 2>/dev/null || echo 000)
+            blue=$(grep -oc '#0369a1' /tmp/b 2>/dev/null || echo 0)
+            teal=$(grep -oc '#0f766e' /tmp/b 2>/dev/null || echo 0)
+            navy=$(grep -oc '#0b2b4a' /tmp/b 2>/dev/null || echo 0)
+            brand=$(grep -oiE '\-\-brand: *#[0-9a-f]{6}' /tmp/b | head -1)
+            bytes=$(wc -c < /tmp/b)
+            printf '| %s | %s | %s | blue:%s teal:%s navy:%s | %s |\n' "$url" "$code" "$bytes" "$blue" "$teal" "$navy" "${brand:-n/a}"
+          }
+          {
+            echo "## Live brand-palette verification"
+            echo "| url | http | bytes | hex counts | --brand |"
+            echo "|---|---|---|---|---|"
+            probe "https://debtreliefguard-frontend.pages.dev/index.html"
+            probe "https://debtreliefguard-frontend.pages.dev/savings.calculator.html"
+            probe "https://debtreliefguard.com/index.html"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
