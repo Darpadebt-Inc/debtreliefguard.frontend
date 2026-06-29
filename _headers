@@ -1,5 +1,11 @@
 # === Unified security + performance baseline (network-wide parity) ===
+# Content-Security-Policy keeps 'unsafe-inline' so existing inline scripts/styles keep
+# working. This site loads no external scripts/styles/iframes beyond Bing UET
+# (bat.bing.com), so the allowlist is minimal. bat.js is a mutable vendor script, so SRI
+# is intentionally not pinned. To soak in production first, rename the header to
+# Content-Security-Policy-Report-Only; switch back to enforce once clean.
 /*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline' https://bat.bing.com; connect-src 'self' https://bat.bing.com; form-action 'self'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
