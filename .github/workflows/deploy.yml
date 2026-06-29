@@ -3,6 +3,18 @@ name: Deploy to Cloudflare Pages
 # Autonomous live deploy via Direct Upload (wrangler), independent of the Cloudflare
 # Pages Git integration. Skips cleanly (green, no failure) until CF secrets are present;
 # once they are, every push to main deploys to the project's production branch.
+#
+# === DEPLOYMENT AUTHORITY / SECURITY NOTE — read before touching deploys ===
+# This repo is PUBLIC. Production deploys are intentionally driven from the PRIVATE repo
+# Darpadebt-Inc/debthelpform.backend -> workflow "Deploy Frontends to Cloudflare Pages"
+# (deploy-frontends.yml), which holds the ONLY copy of CLOUDFLARE_API_TOKEN /
+# CLOUDFLARE_ACCOUNT_ID and deploys BOTH public frontends from one private location.
+# Rationale: the Cloudflare token can edit/deploy production; keeping it out of public
+# repos (single rotation point, least privilege, no secret sprawl) is deliberate.
+# DO NOT add CLOUDFLARE_* secrets to this public repo to "make this workflow deploy" —
+# that would undo the security model. This workflow consequently skips here by design.
+# To deploy: set/rotate the token in the BACKEND repo's Actions secrets, then run the
+# backend "Deploy Frontends to Cloudflare Pages" workflow. Full details in DEPLOYMENT.md.
 
 on:
   push:
