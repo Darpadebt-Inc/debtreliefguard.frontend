@@ -20,7 +20,19 @@ across public repos. This also sidesteps the (documented-broken) Pages Git integ
 **Do NOT add `CLOUDFLARE_*` secrets to this public repo** to make the in-repo
 `deploy.yml` deploy. That workflow skips here **by design**; the backend is the source of truth.
 
-## How to deploy (the supported path)
+## Automated deploy (proxy-mediated — now the default)
+A push to this repo's `main` now triggers a production deploy **automatically** — no manual
+step required. `.github/workflows/trigger-deploy.yml` mints an **ephemeral GitHub OIDC
+token** (no secret is stored in this public repo) and calls the backend proxy worker
+`069-deploy-trigger`, which verifies the token (signature + strict claim allowlist) and
+forwards a `repository_dispatch` to the backend **"Deploy Frontends to Cloudflare Pages"**
+workflow. The manual `workflow_dispatch` path below still works unchanged as a fallback.
+
+The forwarding credential lives only as a Cloudflare Worker secret — this repo stays
+sterile. Design + one-time activation (set the worker secret, deploy the worker):
+backend **`docs/HORIZON-SYNC-DEPLOY-TRIGGER.md`**.
+
+## How to deploy manually (fallback path)
 1. Merge your changes to this repo's `main` (the backend workflow deploys `main`).
 2. Ensure the backend repo's Actions secrets are valid:
    - `CLOUDFLARE_API_TOKEN` — Cloudflare token with **Account → Cloudflare Pages → Edit**
