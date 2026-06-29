@@ -112,6 +112,7 @@
     .hamburger{display:none;appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px}
     .hamburger:focus{outline:2px solid var(--ring)}
     #menuPanel{display:flex;gap:18px}
+    #menuPanel.is-open{display:flex}
     @media (max-width: 900px){#menuPanel{display:none;position:absolute;left:0;right:0;top:64px;background:#fff;border-bottom:1px solid var(--border);padding:10px var(--pad);flex-direction:column}.hamburger{display:inline-block}}
 
     /* Hero */
@@ -331,21 +332,21 @@
 
       const closeMenu = () => {
         if (window.innerWidth > 900) return;
-        menuPanel.style.display = 'none';
+        menuPanel.classList.remove('is-open');
         menuBtn.setAttribute('aria-expanded', 'false');
       };
 
       const openMenu = () => {
-        menuPanel.style.display = 'flex';
+        menuPanel.classList.add('is-open');
         menuBtn.setAttribute('aria-expanded', 'true');
       };
 
       const syncMenuForViewport = () => {
         if (window.innerWidth > 900) {
-          menuPanel.style.display = 'flex';
+          menuPanel.classList.add('is-open');
           menuBtn.setAttribute('aria-expanded', 'false');
         } else {
-          menuPanel.style.display = 'none';
+          menuPanel.classList.remove('is-open');
           menuBtn.setAttribute('aria-expanded', 'false');
         }
       };
@@ -353,7 +354,7 @@
       syncMenuForViewport();
 
       menuBtn.addEventListener('click', () => {
-        const isOpen = menuPanel.style.display === 'flex';
+        const isOpen = menuPanel.classList.contains('is-open');
         if (isOpen) {
           closeMenu();
         } else {
@@ -378,7 +379,7 @@
       document.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
         if (window.innerWidth > 900) return;
-        if (menuPanel.style.display !== 'flex') return;
+        if (!menuPanel.classList.contains('is-open')) return;
         closeMenu();
         menuBtn.focus();
       });
