@@ -11,12 +11,10 @@
  *   V1  blogs.json parses, is an array, and contains no null entries / null fields
  *   V2  every entry has slug + title and a content_url that resolves to a real file
  *   V3  every blog/*.html on disk is referenced by the index (no orphans)
- *
- * Advisory checks (warn only; promoted to blocking once clean):
  *   V4  every entry image/thumbnail resolves to a real file
  *
  * Run from the repo root: `node scripts/verify-blog-feed.mjs`
- * Set IMAGES_BLOCKING=1 to make V4 blocking too.
+ * Set IMAGES_BLOCKING=0 to downgrade V4 to advisory (warn only).
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -26,7 +24,7 @@ const errors = [];
 const warnings = [];
 const fail = (m) => errors.push(m);
 const warn = (m) => warnings.push(m);
-const imagesBlocking = process.env.IMAGES_BLOCKING === "1";
+const imagesBlocking = process.env.IMAGES_BLOCKING !== "0";
 
 const resolveLocal = (url) => {
   if (!url || typeof url !== "string") return null;
