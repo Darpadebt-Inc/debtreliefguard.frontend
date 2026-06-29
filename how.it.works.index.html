@@ -88,7 +88,7 @@
   </script>
 
   <style>
-    :root{ --bg:#f8fafc; --ink:#0f172a; --muted:#475569; --brand:#0369a1; --brand-ink:#0c4a6e; --card:#eff6ff; --border:#e2e8f0; --ring:rgba(3,105,161,.30); --pad:clamp(16px,2vw,24px); --radius:16px; --max:1200px; --shadow:0 10px 30px rgba(0,0,0,.08);} 
+    :root{ --bg:#f8fafc; --ink:#0f172a; --muted:#475569; --brand:#0369a1; --brand-ink:#0c4a6e; --card:#e6fafa; --border:#e2e8f0; --ring:rgba(3,105,161,.30); --pad:clamp(16px,2vw,24px); --radius:16px; --max:1200px; --shadow:0 10px 30px rgba(0,0,0,.08);} 
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     a{color:var(--brand);text-decoration:none}
@@ -137,7 +137,21 @@
     /* Footer */
     footer{border-top:1px solid var(--border);margin-top:26px}
     .foot{padding:14px var(--pad);color:var(--muted);font-size:.9rem}
-  </style>
+  
+/* === DRG-DHF-SKIN-v1 (debthelpform visual match; override layer) === */
+header{background:transparent!important;border:none!important;padding:10px var(--pad,16px) 0!important;position:sticky;top:0;z-index:1000}
+.nav{background:linear-gradient(135deg,#0b2b4a,#0c5a8f 55%,#0369a1)!important;border:1px solid #0b2b4a!important;border-radius:18px!important;padding:10px 16px!important;box-shadow:0 10px 30px rgba(2,6,23,.12);max-width:var(--max,1200px);margin:0 auto}
+.menu{gap:8px}
+.menu a{display:inline-flex;align-items:center;justify-content:center;padding:7px 11px;border-radius:999px;background:#fff;color:#0f172a;border:1px solid #0f172a;font-weight:600;font-size:13px;text-decoration:none}
+.menu a:hover{background:#e2e8f0}
+.menu a[aria-current="page"]{color:#0369a1;border-color:#0369a1;text-decoration:none}
+.btn,.button{border-radius:999px!important}
+.btn.primary,.button.primary,.btn-primary,.button-primary,a.btn-primary,.cta-primary,a.cta.primary,.menu a.btn,.menu a.btn.primary,.menu a.btn-primary,header .menu .btn,header .menu .btn.primary{background:linear-gradient(135deg,#15803d,#166534)!important;color:#fff!important;border:none!important;border-radius:999px!important;box-shadow:0 8px 18px rgba(3,105,161,.30)}
+.btn-outline,.btn.ghost{background:#fff!important;color:#0369a1!important;border:1px solid #bae6fd!important}
+.hamburger,.menu-toggle{background:#fff!important;color:#0f172a!important;border:1px solid #0f172a!important;border-radius:10px}
+.card{border-radius:18px;box-shadow:0 10px 30px rgba(2,6,23,.08)}
+/* === /DRG-DHF-SKIN-v1 === */
+</style>
   <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97227762", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
 </head>
 <body>
