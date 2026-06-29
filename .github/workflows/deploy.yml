@@ -1,83 +1,36 @@
-name: Deploy to Cloudflare Pages
+name: Deploy (handled by backend — no-op here)
 
-# Autonomous live deploy via Direct Upload (wrangler), independent of the Cloudflare
-# Pages Git integration. Skips cleanly (green, no failure) until CF secrets are present;
-# once they are, every push to main deploys to the project's production branch.
+# This repo is PUBLIC and intentionally holds NO Cloudflare secrets. Production deploys run
+# from the PRIVATE repo Darpadebt-Inc/debthelpform.backend -> workflow "Deploy Frontends to
+# Cloudflare Pages" (deploy-frontends.yml), which centralizes the Cloudflare credential.
+# Security rationale: keep the production-deploy token out of public repos (one private
+# rotation point, least privilege). Do NOT add CLOUDFLARE_* secrets to this repo.
 #
-# === DEPLOYMENT AUTHORITY / SECURITY NOTE — read before touching deploys ===
-# This repo is PUBLIC. Production deploys are intentionally driven from the PRIVATE repo
-# Darpadebt-Inc/debthelpform.backend -> workflow "Deploy Frontends to Cloudflare Pages"
-# (deploy-frontends.yml), which holds the ONLY copy of CLOUDFLARE_API_TOKEN /
-# CLOUDFLARE_ACCOUNT_ID and deploys BOTH public frontends from one private location.
-# Rationale: the Cloudflare token can edit/deploy production; keeping it out of public
-# repos (single rotation point, least privilege, no secret sprawl) is deliberate.
-# DO NOT add CLOUDFLARE_* secrets to this public repo to "make this workflow deploy" —
-# that would undo the security model. This workflow consequently skips here by design.
-# To deploy: set/rotate the token in the BACKEND repo's Actions secrets, then run the
-# backend "Deploy Frontends to Cloudflare Pages" workflow. Full details in DEPLOYMENT.md.
+# Why this is a no-op: this workflow previously attempted a Direct Upload and "skipped
+# cleanly" (reported green) when no secrets were present — which looked like a successful
+# deploy while deploying nothing. That misleading signal is removed. There is NO
+# push-trigger here, so pushes no longer produce a fake "Deploy ✓" check. The only real
+# deploy signal comes from the backend workflow, which actually uploads and then runs a
+# live smoke check.
+#
+# To deploy: merge to main, then run the backend "Deploy Frontends to Cloudflare Pages"
+# workflow (it deploys both frontends and verifies them live). Full details in DEPLOYMENT.md.
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: cf-pages-${{ github.ref_name }}
-  cancel-in-progress: true
-
-env:
-  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
-  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CL_ACCOUNT_ID }}
-  SITE_MATCH: debtreliefguard
-
 jobs:
-  deploy:
-    name: Static deploy (Direct Upload)
+  notice:
+    name: Where deploys happen (this repo does not deploy)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Gate on Cloudflare credentials
-        id: gate
+      - name: Point to the real deploy path
         run: |
           set -euo pipefail
-          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ] && [ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "ok=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "::notice title=Pages deploy skipped::Add CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID (token needs 'Cloudflare Pages: Edit') to enable autonomous on-push deploy. Until then deploys run from the backend 'Deploy Frontends to Cloudflare Pages' workflow."
-          fi
-
-      - name: Resolve Pages project + production branch
-        id: proj
-        if: steps.gate.outputs.ok == 'true'
-        run: |
-          set -euo pipefail
-          resp=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects")
-          if [ "$(echo "$resp" | jq -r '.success')" != "true" ]; then
-            echo "::error title=Cloudflare API error::$(echo "$resp" | jq -c '.errors // .')"; exit 1
-          fi
-          proj=$(echo "$resp" | jq -c --arg m "$SITE_MATCH" 'first(.result[] | select(
-              (.name|ascii_downcase|contains($m)) or
-              (((.domains // [])|join(","))|ascii_downcase|contains($m)) or
-              ((.subdomain // "")|ascii_downcase|contains($m))))')
-          if [ -z "$proj" ] || [ "$proj" = "null" ]; then
-            echo "::error title=No matching Pages project::No project matched '$SITE_MATCH'. Existing:"; echo "$resp" | jq -r '.result[]?.name'; exit 1
-          fi
-          echo "name=$(echo "$proj" | jq -r '.name')" >> "$GITHUB_OUTPUT"
-          echo "prod_branch=$(echo "$proj" | jq -r '.production_branch // "main"')" >> "$GITHUB_OUTPUT"
-          echo "Project $(echo "$proj" | jq -r '.name') | production_branch $(echo "$proj" | jq -r '.production_branch')"
-
-      - name: Deploy to PRODUCTION (Direct Upload)
-        if: steps.gate.outputs.ok == 'true'
-        run: |
-          set -euo pipefail
-          npx --yes wrangler@4.32.0 pages deploy . \
-            --project-name "${{ steps.proj.outputs.name }}" \
-            --branch "${{ steps.proj.outputs.prod_branch }}" \
-            --commit-hash "${{ github.sha }}" \
-            --commit-dirty=true
+          msg="This repo does NOT deploy itself. Production deploys run from the PRIVATE backend repo Darpadebt-Inc/debthelpform.backend -> Actions -> 'Deploy Frontends to Cloudflare Pages' (deploys both frontends + live smoke check). The Cloudflare token lives only there so public repos stay secret-free. See DEPLOYMENT.md."
+          echo "$msg"
+          echo "::notice title=Deploys run from the backend repo::$msg"
+          { echo "## Deploy path"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
