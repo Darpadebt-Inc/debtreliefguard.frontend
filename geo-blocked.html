@@ -70,7 +70,7 @@
   </script>
 
   <style>
-    :root{--bg:#f8fafc;--ink:#0f172a;--muted:#475569;--brand:#0369a1;--brand-ink:#0c4a6e;--card:#eff6ff;--border:#e2e8f0;--ring:rgba(3,105,161,.30);--pad:clamp(16px,2vw,24px);--radius:16px;--max:1200px;--shadow:0 10px 30px rgba(0,0,0,.08)}
+    :root{--bg:#f8fafc;--ink:#0f172a;--muted:#475569;--brand:#0369a1;--brand-ink:#0c4a6e;--card:#eff6ff;--border:#e2e8f0;--ring:rgba(3,105,161,.30);--pad:clamp(16px,2vw,24px);--radius:16px;--max:1200px;--shadow:0 10px 30px rgba(0,0,0,.08);--warn:#b45309}
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     a{color:var(--brand);text-decoration:none}
@@ -112,6 +112,8 @@
     label{font-weight:700}
     select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:16px}
     #stateMsg{margin-top:10px}
+    #stateMsg.is-restricted{color:var(--warn)}
+    #stateCta.is-disabled{pointer-events:none;opacity:.55}
 
     footer{border-top:1px solid var(--border);margin-top:26px}
     .foot{padding:14px var(--pad);color:var(--muted);font-size:.9rem}
@@ -324,16 +326,14 @@
       const v = select.value;
       if(restricted.has(v)){
         msg.innerHTML = 'Programs are currently not available in your state due to local licensing rules. You can still explore educational resources and speak with a specialist for general guidance.';
-        msg.style.color = '#b45309';
+        msg.classList.add('is-restricted');
         cta.setAttribute('aria-disabled','true');
-        cta.style.pointerEvents = 'none';
-        cta.style.opacity = '0.55';
+        cta.classList.add('is-disabled');
       } else {
         msg.innerHTML = 'Eligible for consolidation‑first pre‑qualification with no hard credit pull. If not eligible, we’ll pivot to a hardship relief program automatically.';
-        msg.style.color = '';
+        msg.classList.remove('is-restricted');
         cta.removeAttribute('aria-disabled');
-        cta.style.pointerEvents = '';
-        cta.style.opacity = '';
+        cta.classList.remove('is-disabled');
       }
     }
 
