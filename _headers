@@ -1,5 +1,14 @@
 # === Unified security + performance baseline (network-wide parity) ===
+# Content-Security-Policy is deployed in Report-Only mode first: it captures violations
+# without blocking any revenue-critical payload, so lead-gen uptime is unaffected while
+# the allowlist is validated against real traffic. Keeps 'unsafe-inline' so existing
+# inline scripts/styles keep working. This site loads no external scripts/styles/iframes
+# beyond Bing UET (bat.bing.com), so the allowlist is minimal. bat.js is a mutable vendor
+# script, so SRI is intentionally not pinned. Once violation reports are clean, rename the
+# header to Content-Security-Policy to enforce.
 /*
+  Content-Security-Policy-Report-Only: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline' https://bat.bing.com; connect-src 'self' https://bat.bing.com; form-action 'self'; report-uri /api/mesh/015-telemetry-collector/csp-report; report-to csp-endpoint; upgrade-insecure-requests
+  Reporting-Endpoints: csp-endpoint="https://debtreliefguard.com/api/mesh/015-telemetry-collector/csp-report"
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
