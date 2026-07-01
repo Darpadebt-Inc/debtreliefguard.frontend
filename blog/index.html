@@ -555,7 +555,7 @@
           const tagsLabel = tags.length ? ` · ${tags.join(' · ')}` : '';
           return `
             <article class="card">
-              <a href="${safeHref}"><img alt="" src="${imgSrc}" loading="lazy" data-thumb="1"></a>
+              <a href="${safeHref}"><img alt="${title}" src="${imgSrc}" loading="lazy" data-thumb="1"></a>
               <div class="card-body">
                 <h2><a href="${safeHref}">${title}</a></h2>
                 <div class="meta">${date}${tagsLabel}</div>
