@@ -61,7 +61,7 @@
     header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--b)}
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px var(--pad)}
     .brand{display:flex;align-items:center;gap:12px}
-    .brand img{height:34px;width:auto;object-fit:contain}
+    .brand img{display:block;height:92px;width:auto;max-width:min(70vw,320px);object-fit:contain;padding:8px 18px;border-radius:14px;background:#0b2b4a;border:1px solid rgba(56,189,248,.35);box-shadow:0 10px 26px rgba(2,6,23,.25)}
     .brand .name{font-weight:800}
     .menu{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
     .menu a{font-weight:600;color:var(--ink)}
@@ -129,8 +129,7 @@ header{background:transparent!important;border:none!important;padding:10px var(-
   <header>
     <div class="nav container" role="navigation" aria-label="Primary">
       <a class="brand" href="/" aria-label="Gateway Financial Settlement Relief Home">
-        <img src="/assets/logo.svg" alt="GFSR logo" onerror="this.style.display='none'">
-        <span class="name">Gateway Financial Settlement Relief</span>
+        <img src="/images/gateway-logo-header.svg" alt="Gateway Financial Settlement Relief logo" onerror="this.style.display='none'">
       </a>
       <button id="menuBtn" class="hamburger" aria-label="Open menu" aria-controls="menuPanel" aria-expanded="false">☰ Menu</button>
       <nav id="menuPanel" class="menu" role="menu">
