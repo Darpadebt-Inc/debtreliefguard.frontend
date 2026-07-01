@@ -548,14 +548,14 @@
               ? p.image.trim()
               : fallbackImage;
           const imgSrc = escapeAttr(img, fallbackImage);
+          const title = escapeHtml(p.title || 'Untitled');
           // Serve webp/avif for local /images/*.png thumbnails (variants are
           // generated alongside each png); png <img> stays as identical fallback.
           // Guard ensures a <source> is only emitted when the variant exists.
           const isLocalPng = /^\/images\/.*\.png$/i.test(img);
           const pic = isLocalPng
-            ? `<picture><source type="image/avif" srcset="${imgSrc.replace(/\.png$/i, '.avif')}"><source type="image/webp" srcset="${imgSrc.replace(/\.png$/i, '.webp')}"><img alt="" src="${imgSrc}" loading="lazy" data-thumb="1"></picture>`
-            : `<img alt="" src="${imgSrc}" loading="lazy" data-thumb="1">`;
-          const title = escapeHtml(p.title || 'Untitled');
+            ? `<picture><source type="image/avif" srcset="${imgSrc.replace(/\.png$/i, '.avif')}"><source type="image/webp" srcset="${imgSrc.replace(/\.png$/i, '.webp')}"><img alt="${title}" src="${imgSrc}" loading="lazy" data-thumb="1"></picture>`
+            : `<img alt="${title}" src="${imgSrc}" loading="lazy" data-thumb="1">`;
           const excerptRaw = (typeof p.excerpt === 'string' && p.excerpt.trim()) ? p.excerpt.trim() : '';
           const excerpt = escapeHtml(excerptRaw || 'See how much you could save with a personalized plan.');
           const tags = Array.isArray(p.tags) ? p.tags.slice(0, 3).map(escapeHtml) : [];
