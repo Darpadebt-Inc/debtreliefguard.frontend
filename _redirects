@@ -6,11 +6,20 @@
 /learn/settlement-vs-consolidation/ /faq/settlement-vs-consolidation/index.html 200
 /learn/state-laws                  /learn/state-laws/index.html           200
 /learn/state-laws/                 /learn/state-laws/index.html           200
+/learn/bankruptcy-alternatives      /bankruptcy.alternatives.index.html    200
+/learn/bankruptcy-alternatives/     /bankruptcy.alternatives.index.html    200
+/learn/scams-compliance             /scams.compliance.index.html           200
+/learn/scams-compliance/            /scams.compliance.index.html           200
 
 /faq.html                   /faq.index.html                                301
 /faq                        /faq.index.html                                301
 /faq/                       /faq.index.html                                301
 /faq/index.html             /faq.index.html                                301
+
+/contact.html                /contact.index.html                           301
+/contact                     /contact.index.html                           301
+/contact/                    /contact.index.html                           301
+/contact/index.html          /contact.index.html                           301
 
 # Blog list
 /blogs                     /blog                                           301
