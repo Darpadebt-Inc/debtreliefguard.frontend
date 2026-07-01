@@ -109,7 +109,8 @@
     .visual-grid img{width:100%;height:auto;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow)}
     .visual-text p{margin:8px 0 0}
     .visual-text ul{margin:12px 0 0 18px}
-    @media (max-width:900px){.visual-grid{grid-template-columns:1fr}}
+    .why-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    @media (max-width:900px){.visual-grid{grid-template-columns:1fr}.why-grid{grid-template-columns:1fr}}
     label{font-weight:700}
     select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:16px}
     #stateMsg{margin-top:10px}
@@ -216,7 +217,7 @@ header{background:transparent!important;border:none!important;padding:10px var(-
   </section>
 
   <section class="section" aria-label="Why choose us">
-    <div class="container" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+    <div class="container why-grid">
       <div class="card pad"><h3>Transparent pricing</h3><p class="micro">No hidden fees or upfront charges—every plan follows FTC guidelines.</p></div>
       <div class="card pad"><h3>No hard credit pull</h3><p class="micro">Preview options risk‑free; checking eligibility doesn’t affect your score.</p></div>
       <div class="card pad"><h3>U.S.-based specialists</h3><p class="micro">Get expert help from trained professionals who understand your state’s rules.</p></div>
