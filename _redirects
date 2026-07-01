@@ -43,6 +43,8 @@
 /content/blog/:year-:month-:day-:rest/index.html      /blog/:year-:month-:day-:rest.html                     301
 /content/blog/:splat                                  /blog/:splat                                           301
 
+/blog/understanding-your-rights-how-to-handle-credit-card-debt-collections /blog/2026-01-30-understanding-your-rights-how-to-handle-credit-card-debt-collections.html 301
+
 /blog/understanding-your-rights-how-to-handle-credit-card-debt-collection /blog/2026-02-01-understanding-your-rights-how-to-handle-credit-card-debt-collection.html 301
 
 /blog/debt-relief-fraud-prevention-spotting-scams-and-ensuring-your-safety-against-fraud-and-identity-theft /blog/2026-02-03-debt-relief-fraud-prevention-spotting-scams-and-ensuring-your-safety-against-fraud-and-identity-theft.html 301
