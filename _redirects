@@ -197,3 +197,9 @@
 /blog/red-flags-in-debt-relief-contracts-to-watch-for /blog/2026-06-30-red-flags-in-debt-relief-contracts-to-watch-for.html 301
 
 /blog/what-upfront-fee-bans-mean-for-consumers /blog/2026-06-30-what-upfront-fee-bans-mean-for-consumers.html 301
+
+# Removed out-of-lane pages -> 301 to owning site
+/credit.card.relief.index.html https://gatewaydebthelp.com/credit-card-relief.html 301
+/credit.card.relief.index https://gatewaydebthelp.com/credit-card-relief.html 301
+/debt.relief.option.index.html https://gatewaydebthelp.com/ 301
+/debt.relief.option.index https://gatewaydebthelp.com/ 301
