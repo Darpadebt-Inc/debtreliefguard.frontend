@@ -269,12 +269,12 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
           </div>
 
           <label style="display:flex; gap:10px; align-items:start; font-weight:500; margin-top:12px;">
-            <input type="checkbox" id="terms" required />
+            <input type="checkbox" id="terms" name="consent_terms" required />
             <span>I agree to the <a href="/privacy.policy.index.html">Privacy Policy</a> and <a href="/terms.index.html">Terms</a>. We never charge upfront fees.</span>
           </label>
           <label style="display:flex; gap:10px; align-items:start; font-weight:500; margin-top:10px;">
-            <input type="checkbox" id="marketing" />
-            <span>It’s okay to contact me about debt relief options by phone, email, or text. Standard call/SMS rates may apply.</span>
+            <input type="checkbox" id="marketing" name="consent_marketing" value="yes" />
+            <span>By checking this box, I agree that Gateway Financial Settlement Relief, LLC and its program partners may contact me at the phone number and email address I provided — by call, text/SMS, and email, including using an automatic telephone dialing system or an artificial or prerecorded voice — about debt relief options. Message and data rates may apply. I understand consent is not required to purchase any goods or services, and I may revoke this consent at any time by calling <a href="tel:+18884377141">+1 (888) 437-7141</a> or emailing <a href="mailto:support@debtreliefguard.com">support@debtreliefguard.com</a>.</span>
           </label>
           <p class="small" style="margin-top:8px;">Consent is not required to purchase services.</p>
 
@@ -287,6 +287,7 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
         </div>
       </form>
 
+      <p class="legal">DebtReliefGuard is owned and operated by Gateway Financial Settlement Relief, LLC. We are not a lender, law firm, or credit counseling agency, and nothing on this site is legal, tax, or financial advice — content is educational only. Debt settlement may negatively affect your credit and could involve tax consequences; results are not guaranteed and vary by state, creditor, and individual circumstances. We do not charge upfront fees for debt relief services.</p>
       <p class="legal">FTC alignment: We do not charge upfront fees for debt relief services. Options and eligibility vary by state and creditor.  
         <br/>  
         <strong>BBB:</strong> View our public profile on the Better Business Bureau website (we are not a paying member). <a target="_blank" rel="noopener nofollow" href="https://www.bbb.org/us/fl/inglis/profile/debt-relief-services/gateway-financial-settlement-relief-llc-0733-235973278
@@ -542,10 +543,10 @@ footer { padding: 20px 18px 40px; color: var(--muted); font-size: 13px; }
           state: stateVal || null,
           debt_amount: Number(debtRange),
           consent: {
-            terms: true,
+            terms: !!($('#terms') && $('#terms').checked),
             marketing: !!($('#marketing') && $('#marketing').checked),
             timestamp: new Date().toISOString(),
-            disclosure_version: '2026-06-homepage-v1'
+            disclosure_version: '2026-07-drg-homepage-v2-tcpa'
           },
           hp: hp.value,
           form_ts: Number(formTs.value),
